@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+echo "Running Rubo Cop"
+bundle exec rubocop -A
+
+echo "Running Security audit on dependencies"
+bundle exec bundler-audit --update
+
+echo "Running Security audit on application code"
+bundle exec brakeman -q -w2
+
+echo "Checking if rubies go faster"
+bundle exec fasterer
+
+echo "Performing code review"
+bundle exec pronto run --commit=$(git log --pretty=format:%H | tail -1)
+
+echo "Enabling smell detector"
+bundle exec reek
+
+echo "Checking for best practices"
+bundle exec rails_best_practices . -c .rails_best_practices.yml

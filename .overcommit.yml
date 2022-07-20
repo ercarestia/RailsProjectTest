@@ -1,0 +1,59 @@
+CommitMsg:
+  CapitalizedSubject:
+    enabled: false
+
+  EmptyMessage:
+    enabled: false
+
+  TrailingPeriod:
+    enabled: true
+
+  TextWidth:
+    enabled: false
+
+PreCommit:
+  ALL:
+    on_warn: fail
+
+  AuthorEmail:
+    enabled: true
+
+  AuthorName:
+    enabled: true
+
+  Brakeman:
+    enabled: true
+
+  BundleAudit:
+    enabled: true
+
+  BundleCheck:
+    enabled: 
+
+  Fasterer:
+    enabled: true
+
+  # Flay:
+  #   enabled: true
+
+  # Pronto:
+  #   enabled: true
+
+  RailsBestPractices:
+    enabled: true
+
+  RailsSchemaUpToDate:
+    enabled: true
+
+  Reek:
+    enabled: true
+
+  RuboCop:
+    enabled: true
+
+  MergeConflicts:
+    enabled: true
+    
+  YamlSyntax:
+    enabled: true
+    

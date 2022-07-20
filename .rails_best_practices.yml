@@ -1,0 +1,7 @@
+RemoveUnusedMethodsInControllersCheck: { 
+  except_methods: [
+    'Responder#to_turbo_stream',
+    'MealType#occasion_values',
+    'Plan#can_add_weeks?'
+  ] 
+}

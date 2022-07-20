@@ -1,0 +1,2 @@
+id,name,fact,data_type,allowed_values,created_at,updated_at
+1,Calories,calories,integer,,2022-05-31 17:56:41 UTC,2022-05-31 17:56:41 UTC

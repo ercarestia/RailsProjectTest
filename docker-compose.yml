@@ -1,0 +1,64 @@
+version: "3.9"
+services:
+  db:
+    image: public.ecr.aws/docker/library/postgres:latest
+    volumes:
+      - 'db:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+
+  redis:
+    image: public.ecr.aws/docker/library/redis:latest
+    command: redis-server
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis:/data'
+
+  yarn: &rails
+    build: .
+    volumes:
+      - .:/app
+      - 'bundle:/bundle'
+    command: bash -c "rails tmp:clear log:clear && bin/docker.dev"
+    environment:
+      DATABASE_URL: postgres://dev:password@db
+      BUNDLE_PATH:  /bundle
+      REDIS_URL: redis://redis:6379/1
+      RAILS_LOG_TO_STDOUT: enabled
+    depends_on:
+      - db
+      - redis
+    stdin_open: true
+    tty: true
+
+  web:
+    <<: *rails
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rdebug-ide --debug --host 0.0.0.0 --port 1234 --dispatcher-port 26162 -- bin/rails server -p 3000 -b 0.0.0.0" 
+    ports:
+      - "3000:3000"
+      - "1234:1234" 
+      - "26162:26168" 
+    stdin_open: true 
+    tty: true # enable for debugging with binding.pry or ruby debug ide
+
+  sidekiq:
+    <<: *rails
+    command: bundle exec sidekiq
+
+volumes:
+  redis:
+  db:
+  bundle:

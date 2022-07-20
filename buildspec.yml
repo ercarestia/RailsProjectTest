@@ -1,0 +1,49 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - buildExitCode=1
+      - aws --version
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - BUILD_TAG="$(git describe --tags --abbrev=0).$(git log $(git describe --tags --abbrev=0)..HEAD --oneline | wc -l | xargs)_$(git rev-parse --short HEAD)"
+      - RAILS_ENV=$ENV
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com  
+      - docker-compose run web bundle install
+      - docker-compose run  -e RAILS_ENV=test web bash -c "rails db:drop db:create db:migrate && bin/rake"
+      - docker-compose run web bin/checks
+     # - docker-compose run -e RAILS_ENV=$ENV -e SECRET_KEY_BASE=secret web bin/rails assets:precompile
+
+  build:
+    commands:
+      - echo update the base image in Dockerfile
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:latest -f Dockerfile .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$BUILD_TAG
+      - buildExitCode=$?
+    finally:
+      - |
+        if [ "$buildExitCode" -ne 0 ]; then
+          badge_status=failing
+          badge_color=CC0000
+        else
+          badge_status=passing
+          badge_color=28A745
+        fi
+        badge_build=$(echo $BUILD_TAG | sed 's/_/__/g')
+      - curl -s "https://img.shields.io/badge/Build-$badge_status-$badge_color.svg?logo=docker&style=flat" > main-build.svg
+      - aws s3 cp main-build.svg s3://bistomd-build-badges/main-build.svg --acl public-read --cache-control no-cache
+  post_build:
+    commands:
+      - curl -s "https://img.shields.io/badge/Latest_Stable_Build-$badge_build-$badge_color.svg?logo=amazonaws&style=flat" > build-tag.svg
+      - aws s3 cp build-tag.svg s3://bistomd-build-badges/build-tag.svg --acl public-read --cache-control no-cache    
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:$BUILD_TAG
+      - docker push $REPOSITORY_URI:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"menuadmin","imageUri":"%s"}]' $REPOSITORY_URI:$BUILD_TAG > imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json

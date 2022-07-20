@@ -1,0 +1,25 @@
+{
+    "ruby.format": "rubocop",
+    "ruby.lint": {
+      "reek": true,
+      "rubocop": true
+    },
+    // Recommended when using Solargraph
+    "ruby.intellisense": false,
+    "files.associations": {
+      "*.erb": "erb"
+    },
+    "[ruby]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "castwide.solargraph"
+    },
+    "[erb]": {
+      "editor.defaultFormatter": "aliariff.vscode-erb-beautify"
+    },
+    "solargraph.completion": true,
+    "solargraph.hover": true,
+    "solargraph.formatting": true,
+    "solargraph.symbols": true,
+    "solargraph.definitions": true,
+    "solargraph.references": true
+}

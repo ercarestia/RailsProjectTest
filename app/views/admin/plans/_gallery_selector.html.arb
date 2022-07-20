@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+div(class: 'multi-button pull-right') do
+  button(class: "mini-icons-food-selector #{params[:size] == 'sm' ? 'icon-selected' : ''}") do
+    fa_icon('bars 2x', 'data-size': 'sm')
+  end
+  button(class: "small-icons-food-selector #{params[:size] == 'min' ? 'icon-selected' : ''}") do
+    fa_icon('th 2x', 'data-size': 'min')
+  end
+  button(class: "large-icons-food-selector #{params[:size] == 'max' || params[:size].blank? ? 'icon-selected' : ''}") do
+    fa_icon('th-large 2x', 'data-size': 'max')
+  end
+end

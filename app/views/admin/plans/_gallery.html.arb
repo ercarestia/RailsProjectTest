@@ -1,0 +1,110 @@
+# frozen_string_literal: true
+
+table class: 'table' do
+  tr do
+    td ' '
+    available_occasions.map do |occasion|
+      th occasion.name
+    end
+  end
+  plan_week['days'].map do |plan_week_day|
+    day_name = plan_week_day['name']
+
+    day_total = plan_week_day['occasions'].map do |occasion|
+      occasion.dig('food', 'calories').to_i
+    end.sum
+    tr do
+      th class: 'darkcyan' do
+        div do
+          if plan_week_day['warnings'].present?
+            div(fa_icon('exclamation-triangle 2x c-yellow'),
+                style: 'padding-left: 10px')
+          end
+          span day_name
+          br
+          if day_total != 0
+            span(class: 'calorie-text-header calorie-text highlighter') do
+              "#{day_total} cal"
+            end
+          end
+        end
+      end
+      plan_week_day['occasions'].map do |plan_week_day_occasion_food|
+        occasion_name = plan_week_day_occasion_food['name']
+        food = plan_week_day_occasion_food['food']
+        td(class: 'hover-td') do
+          div(class: 'cards-landscape') do
+            if food.present?
+              food_has_warnings = (plan_week['warnings'] || {})[food['id']]
+              div(class: 'hover-buttons') do
+                a(class: 'edit-food', href: add_food_admin_plan_path(
+                  id: plan.id,
+                  occasion: plan_week_day_occasion_food['id']
+                )) do
+                  fa_icon 'edit 4x', 'data-food-id': food['id'], 'data-id': plan_week_day_occasion_food['id']
+                end
+                a(href: admin_food_url(food['id'])) { fa_icon 'search 4x' }
+              end
+            else
+              div(class: 'hover-buttons', style: 'display: block') do
+                a(class: 'edit-food', href: add_food_admin_plan_path(
+                  id: plan.id,
+                  occasion: plan_week_day_occasion_food['id']
+                )) do
+                  fa_icon 'plus 4x', 'data-food-id': '', 'data-id': plan_week_day_occasion_food['id']
+                end
+              end
+            end
+            if food.present?
+              a(class: 'hover-close remove-food', href: remove_food_admin_plan_path(
+                plan,
+                occasion: plan_week_day_occasion_food['id']
+              )) do
+                fa_icon 'close'
+              end
+            end
+            div(
+              class: "card-flyer exclude_search_#{
+                food.try(:[], 'exclude_search')
+              } #{food_has_warnings ? 'warning-food' : ''}"
+            ) do
+              div(class: 'text-box') do
+                div(class: 'image-box') do
+                  if food.present?
+                    img(
+                      src: food['server_image_url'],
+                      alt: food['name'],
+                      onerror: "this.onerror=null; this.src='#{food['server_fault_image_url']}'"
+                    )
+                  else
+                    div(class: 'placeholder')
+                  end
+                end
+                div(class: 'text-container') do
+                  if food && !food['calories'].to_i.zero?
+                    span(class: 'calorie-text highlighter') do
+                      "#{food['calories']} cal"
+                    end
+                  else
+                    br
+                  end
+                  div(class: 'margin-2') do
+                    status_tag "#{week_name} #{day_name} #{occasion_name}"
+                  end
+                  h6 do
+                    span food.try(:[], 'name') || a(class: 'edit-food', href: add_food_admin_plan_path(
+                      id: plan.id,
+                      occasion: plan_week_day_occasion_food['id']
+                    )) { 'Add food' }
+
+                    div(fa_icon('exclamation-triangle 2x c-yellow')) if food_has_warnings
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end

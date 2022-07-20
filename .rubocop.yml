@@ -1,0 +1,45 @@
+require: rubocop-rails
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    <% `git status --ignored --porcelain`.lines.grep(/^!! /).each do |path| %>
+    - <%= path.sub(/^!! /, '') %>
+    <% end %>
+    - 'bin/*'
+    - 'vendor/**/*'
+
+Layout/LineLength:
+  Exclude:
+    - config/initializers/devise.rb
+
+Style/RedundantFetchBlock:
+  Exclude:
+    - config/puma.rb
+    - config/initializers/sidekiq.rb
+    - spec/code_coverage.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'db/**/*'
+    - spec/code_coverage.rb
+    - app/admin/*
+    - config/environments/*.rb
+    - '/**/*.arb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'db/**/*'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'db/**/*'
+
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - staging
+    - integration

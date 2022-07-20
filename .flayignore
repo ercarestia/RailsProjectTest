@@ -1,0 +1,6 @@
+**/config/environments/**/*
+**/spec/**/*.rb
+**/db/**/*.rb
+
+**/app/admin/days.rb
+**/app/admin/weeks.rb

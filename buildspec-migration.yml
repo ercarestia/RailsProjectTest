@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Run the new ECS task for running DB migrations
+      - taskdef=$(aws ecs list-task-definitions --family-prefix $TASK_FAMILY --sort desc | jq '.taskDefinitionArns[0]' | sed 's:.*/::' | tr -d '"')
+      - run_result=$(aws ecs run-task --launch-type FARGATE --cluster $ECS_CLUSTER --task-definition $taskdef --network-configuration "awsvpcConfiguration={subnets=[$SUBNET1,$SUBNET2],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}"  --overrides "containerOverrides={name=menuadmin,command=["rails","db:migrate"]}")
+      - container_arn=$(echo $run_result | jq '.tasks[0].taskArn' | sed -e 's/^"//' -e 's/"$//')
+      - aws ecs wait tasks-stopped --cluster $ECS_CLUSTER --tasks "${container_arn}"
+      - describe_result=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks "${container_arn}")
+      - terminated_status=$(echo $describe_result | jq '.tasks[0].containers[0].exitCode')
+      - echo $terminated_status
+      - exit $terminated_status     
+

@@ -1,0 +1,49 @@
+<!-- include the needed font from google api -->
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Archivo+Black" />
+<!-- include the nutrition label plugin css file -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/nutrition-label-jquery-plugin@11.0.10/nutritionLabel-min.css">
+
+<!-- include the nutrition label plugin js file -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/nutrition-label-jquery-plugin@11.0.10/nutritionLabel-min.min.js"></script>
+<% food = Food.find(params[:id])%>
+<img class='panel-food-img'
+    src="<%= food.server_image_url %>"
+    alt="<%= food.name %>" 
+    onerror="this.onerror=null; this.src='<%= food.server_fault_image_url %>'"
+>
+<div id="nutri-label"></div>
+<script>
+$(function(){
+    $('#nutri-label').nutritionLabel({
+        showServingUnitQuantity : false,
+        itemName : '<%= food.name%>',
+        ingredientList : '<%= food.ingredient_label%>',
+
+        decimalPlacesForQuantityTextbox : 2,
+        valueServingUnitQuantity : 1,
+
+        allowFDARounding : true,
+        decimalPlacesForNutrition : 2,
+
+        showPolyFat : false,
+        showMonoFat : false,
+
+        valueCalories : <%= food.calories %>,
+        valueFatCalories : <%= food.calories_from_fat %>,
+        valueTotalFat : <%= food.total_fat %>,
+        valueSatFat : <%= food.saturated_fat %>,
+        valueTransFat : <%= food.trans_fat %>,
+        valueCholesterol : <%= food.cholesterol %>,
+        valueSodium : <%= food.sodium %>,
+        valueTotalCarb : <%= food.carbohydrates %>,
+        valueFibers : <%= food.dietary_fiber %>,
+        valueSugars : <%= food.sugars %>,
+        valueProteins : <%= food.protein %>,
+        valueVitaminC : <%= food.vitamin_d %>,
+        valueCalcium : <%= food.calcium %>,
+        valueIron : <%= food.iron %>
+    });
+});
+</script>
+
+

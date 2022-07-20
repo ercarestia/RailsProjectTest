@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+br
+panel 'JSON', 'data-panel': 'collapsed' do
+  tabs do
+    tab 'Raw' do
+      pre(id: 'panel-json-raw') do
+        JSON.pretty_generate(plan.aggregate)
+      end
+    end
+    tab 'Tree' do
+      pre(id: 'panel-json-pre')
+    end
+  end
+end

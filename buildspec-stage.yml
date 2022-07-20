@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - aws ecs update-service -cluster menuadmin-staging --task-definition menuadmin --service admin --force-new-deployment
+      - aws ecs wait services-stable --cluster menuadmin-staging --services admin
+      - aws ecs update-service -cluster menuadmin-staging --task-definition menuadmin-sidekiq --service sidekiq --force-new-deployment
+      - aws ecs wait services-stable --cluster menuadmin-staging --services sidekiq       

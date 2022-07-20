@@ -1,0 +1,4 @@
+id,name,action,created_at,updated_at
+1,has a daily limit of,day_le,2022-05-28 22:35:24 UTC,2022-05-28 22:35:24 UTC
+2,has a weekly limit of,week_le,2022-05-28 22:35:24 UTC,2022-05-28 22:35:24 UTC
+3,has a plan limit of,plan_le,2022-05-28 22:35:24 UTC,2022-05-28 22:35:24 UTC

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if ! command -v foreman &> /dev/null
+then
+  echo "Installing foreman and rerun..."
+  gem install foreman
+  gem install rerun
+fi
+
+foreman start -f Procfile.docker.dev

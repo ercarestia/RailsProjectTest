@@ -1,0 +1,26 @@
+//launch.json, should be in a folder in the app root called .vscode. 
+{  
+    // Use IntelliSense to learn about possible attributes.  
+    // Hover to view descriptions of existing attributes.  
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387 
+
+
+    //notes about the config below.  
+    //"cwd" corresponds to the current working directory (i.e. your code you want to place breakpoints on, inspect, etc.)
+    //the remoteHost and remotePort correspond to the dockerized Rails container with the exposed ports we opened in the dockerfile and docker-compose.yaml.
+    //the remoteWorkspaceRoot is the mounting point in the docker container you want to attach the debugger to.  All the code must follow the same structure or none of the            // breakpoints will be hit.
+
+    "version": "0.2.0",  
+    "configurations": [  
+      {  
+        "name": "Attach debugger to docker",  
+        "type": "Ruby",  
+        "request": "attach",  
+        "cwd": "${workspaceRoot}",  
+        "remoteHost": "127.0.0.1",  
+        "remotePort": "1234",  
+        "remoteWorkspaceRoot": "/app",  
+        "showDebuggerOutput": true  
+      }  
+    ]  
+  }

@@ -1,0 +1,87 @@
+# frozen_string_literal: true
+
+table class: 'table', cellspacing: 5 do
+  tr do
+    td do
+      fa_icon 'calendar 4x c-darkcyan'
+    end
+    available_occasions.map do |occasion|
+      th occasion.name
+    end
+  end
+  plan_week['days'].map do |plan_week_day|
+    day_name = plan_week_day['name']
+    day_total = plan_week_day['occasions'].map do |occasions|
+      occasions.dig('food', 'calories').to_i
+    end.sum
+    tr do
+      th class: 'darkcyan' do
+        div do
+          if plan_week_day['warnings'].present?
+            div(fa_icon('exclamation-triangle 2x c-yellow'),
+                style: 'padding-left: 10px')
+          end
+          span day_name
+          br
+          if day_total != 0
+            span(class: 'calorie-text-header calorie-text') do
+              " [ #{day_total} cal ] "
+            end
+          end
+        end
+      end
+      plan_week_day['occasions'].map do |plan_week_day_occasion_food|
+        food = plan_week_day_occasion_food['food']
+        food_has_warnings = (plan_week['warnings'] || {})[food.try(:[], 'id')]
+        exclude_search = food.try(:[], 'exclude_search').present?
+        td(class: 'hover-td') do
+          div(
+            class: "gallery-tab-container exclude_search_#{exclude_search} #{food_has_warnings ? 'warning-food' : ''}"
+          ) do
+            if food.present?
+              span(fa_icon('exclamation-triangle 2x c-yellow pull-right')) if food_has_warnings
+              div(class: 'gallery-tab-image-box') do
+                img(
+                  src: food['server_image_url'], alt: 'icon',
+                  width: '70', height: '70', border: '0', align: 'bottom',
+                  onerror: "this.onerror=null; this.src='#{food['server_fault_image_url']}'"
+                )
+              end
+              div(class: 'gallery-tab-details-box') do
+                para(class: 'gallery-tab-details-name-line') do
+                  span food['name']
+                  span(class: 'calorie-text') { "[ #{food['calories']} cal ]" } unless food['calories'].to_i.zero?
+                end
+                para(class: 'gallery-tab-details-info-line') do
+                  a(href: admin_food_url(food['id'])) { 'View' }
+                  a(class: 'edit-food', 'data-food-id': food['id'],
+                    href: add_food_admin_plan_path(
+                      id: plan.id,
+                      occasion: plan_week_day_occasion_food['id']
+                    )) do
+                    'Edit'
+                  end
+                  a(class: 'remove-food', href: remove_food_admin_plan_path(
+                    plan,
+                    occasion: plan_week_day_occasion_food['id']
+                  )) { 'Delete' }
+                end
+              end
+            else
+              div class: 'placeholder' do
+                div { fa_icon 'plus 2x' }
+                div a(class: 'edit-food', 'data-food-id': '',
+                      href: add_food_admin_plan_path(
+                        id: plan.id,
+                        occasion: plan_week_day_occasion_food['id']
+                      )) {
+                      'Add'
+                    }
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
