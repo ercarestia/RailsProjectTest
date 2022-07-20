@@ -491,7 +491,7 @@ DEPENDENCIES
   cancancan
   cssbundling-rails
   database_cleaner-active_record
-  debase (~> 0.2.2.beta10)
+  debase (~> 0.2.2.beta2)
   debug
   devise (~> 4.8)
   factory_bot_rails
