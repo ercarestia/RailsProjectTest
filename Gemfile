@@ -93,9 +93,9 @@ group :development, :test do
   gem 'rubocop-rspec'
 
   # Code debug
+  gem 'debase', '~> 0.2.2.beta2'
   gem 'pry'
-  # gem 'debase', '~> 0.2.2.beta2', require: false
-  # gem 'ruby-debug-ide'
+  gem 'ruby-debug-ide'
 end
 
 group :development do
