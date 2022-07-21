@@ -32,7 +32,8 @@ jobs:
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@8c72644a0b2138c5f64531d3c8011890200fa183 # v1.105.0
         with:
-          bundler-cache: true
+          bundler-cache: false
+        run: bundle install
       # Add or replace database setup steps here
       - name: Set up database schema
         run: bin/rails db:schema:load --trace
