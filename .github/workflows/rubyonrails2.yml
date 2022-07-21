@@ -36,7 +36,7 @@ jobs:
 
       #Set permissions for bin/rails
       - name: Set execute permission for bin/rails..."
-        run: run: chmod u+x bin/rails
+        run: chmod u+x bin/rails
       # Add or replace database setup steps here
       - name: Set up database schema
         run: bin/rails db:schema:load
