@@ -54,8 +54,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install Ruby and gems
-          uses: ruby/setup-ruby@8c72644a0b2138c5f64531d3c8011890200fa183 # v1.105.0
-        # uses: ruby/setup-ruby@8f312efe1262fb463d906e9bf040319394c18d3e # v1.92
+          uses: ruby/setup-ruby@8c72644a0b2138c5f64531d3c8011890200fa183 # v1.105.0 #uses: ruby/setup-ruby@8f312efe1262fb463d906e9bf040319394c18d3e # v1.92
         with:
           bundler-cache: true
       # Add or replace any other lints here
