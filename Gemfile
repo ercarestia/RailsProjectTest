@@ -94,8 +94,8 @@ group :development, :test do
 
   # Code debug
   gem 'pry'
-  gem 'debase', '~> 0.2.2.beta2', require: false
-  gem 'ruby-debug-ide'
+  # gem 'debase', '~> 0.2.2.beta2', require: false
+  # gem 'ruby-debug-ide'
 end
 
 group :development do
